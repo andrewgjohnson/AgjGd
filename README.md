@@ -4,7 +4,6 @@
 [![Current Release](https://img.shields.io/github/release/andrewgjohnson/AgjGd.png?colorB=0366d6&style=flat-square&logoColor=white&logo=github)](https://github.com/andrewgjohnson/AgjGd/releases)
 [![Coveralls Coverage](https://img.shields.io/coverallsCoverage/github/andrewgjohnson/AgjGd.png?colorB=0366d6&style=flat-square&logoColor=white&logo=coveralls)](https://coveralls.io/github/andrewgjohnson/AgjGd)
 [![Packagist Downloads](documentation/images/downloads-badge.png)](https://AgjGd.org/statistics/#downloads)
-[![GitHub Stargazers](documentation/images/stargazers-badge.png)](https://AgjGd.org/statistics/#stargazers)
 [![GitHub Contributors](documentation/images/contributors-badge.png)](https://AgjGd.org/statistics/#contributors)
 [![GitHub Issues](documentation/images/issues-badge.png)](https://AgjGd.org/statistics/#open-issues)
 [![Patreon](documentation/images/patreon-badge.png)](https://patreon.com/agjopensource)

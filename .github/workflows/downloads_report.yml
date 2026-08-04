@@ -38,7 +38,7 @@ jobs:
             echo $1 | awk '{printf "%'\''d\n", $1}'
           }
 
-          REPORT="project|downloads\n-------|----------\n"
+          REPORT="Project|Downloads\n-------|----------\n"
           TOTAL_DOWNLOADS=0
           while IFS=$'\t' read -r REPO DOWNLOADS; do
             [ -z "$REPO" ] && continue
