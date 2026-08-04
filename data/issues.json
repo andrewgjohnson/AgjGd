@@ -1,0 +1,32 @@
+{
+  "repositories": [
+    {
+      "repository": "andrewgjohnson/AgjGd",
+      "openIssues": 0
+    },
+    {
+      "repository": "andrewgjohnson/imageblendedcolorallocate",
+      "openIssues": 0
+    },
+    {
+      "repository": "andrewgjohnson/imagecolorallocatefromstring",
+      "openIssues": 0
+    },
+    {
+      "repository": "andrewgjohnson/imagegradientrectangle",
+      "openIssues": 0
+    },
+    {
+      "repository": "andrewgjohnson/imagettftextblur",
+      "openIssues": 0
+    },
+    {
+      "repository": "andrewgjohnson/imagettftextgradient",
+      "openIssues": 0
+    },
+    {
+      "repository": "andrewgjohnson/linebreaks4imagettftext",
+      "openIssues": 0
+    }
+  ]
+}
