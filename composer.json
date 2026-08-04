@@ -1,14 +1,14 @@
 {
-    "name": "agjgd/agjgd",
+    "name": "andrewgjohnson/agjgd",
     "type": "library",
-    "description": "agjgd is a collection of projects started by Andrew G. Johnson for PHP’s GD library",
+    "description": "AgjGd extends the functionality of PHP’s GD library. It is a single class, \\AndrewGJohnson\\AgjGd, with functionality exposed via public static methods",
     "keywords": [
         "gd",
         "graphics",
         "image",
         "images"
     ],
-    "homepage": "https://agjgd.org",
+    "homepage": "https://AgjGd.org",
     "license": "MIT",
     "authors": [
         {
@@ -16,16 +16,46 @@
             "email": "andrew@andrewgjohnson.com",
             "homepage": "https://www.andrewgjohnson.com/",
             "role": "Project Lead"
+        },
+        {
+            "name": "Philip van Heemstra",
+            "homepage": "https://github.com/vHeemstra",
+            "role": "Contributor"
         }
     ],
     "require": {
-        "php": ">=5.0.0",
-        "ext-gd": "*",
-        "andrewgjohnson/imageblendedcolorallocate": "1.*",
-        "andrewgjohnson/imagecolorallocatefromstring": "1.*",
-        "andrewgjohnson/imagegradientrectangle": "1.*",
-        "andrewgjohnson/imagettftextblur": "1.*",
-        "andrewgjohnson/imagettftextgradient": "1.*",
-        "andrewgjohnson/linebreaks4imagettftext": "1.*"
+        "php": ">=8.0.0",
+        "ext-gd": "*"
+    },
+    "require-dev": {
+        "phpstan/phpstan": "^2.1",
+        "phpunit/phpunit": "^12.5",
+        "squizlabs/php_codesniffer": "^3.13"
+    },
+    "autoload": {
+        "psr-4": {
+            "AndrewGJohnson\\": "source/AndrewGJohnson/"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "AndrewGJohnson\\AgjGd\\Tests\\": "tests/"
+        }
+    },
+    "scripts": {
+        "coverage": "@php vendor/bin/phpunit --coverage-text",
+        "coverage:html": "@php vendor/bin/phpunit --coverage-html coverage",
+        "lint": "@php vendor/bin/phpcs",
+        "lint:fix": "@php vendor/bin/phpcbf",
+        "phpstan": [
+            "@php vendor/bin/phpstan analyse",
+            "@php vendor/bin/phpstan analyse --configuration phpstan-php80.neon.dist"
+        ],
+        "phpunit": "@php vendor/bin/phpunit",
+        "test": [
+            "@lint",
+            "@phpstan",
+            "@coverage"
+        ]
     }
 }

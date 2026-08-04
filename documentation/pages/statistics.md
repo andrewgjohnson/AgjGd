@@ -1,14 +1,14 @@
 ---
 layout:    default
-title:     Statistics • agjgd
+title:     Statistics • AgjGd
 permalink: /statistics/
-nav_order: 3
+nav_order: 5
 nav_text:  Statistics
 ---
 
 # Statistics
 
-The statistics for contributors, downloads, stargazers and open issues for all agjgd projects can be found below.
+The statistics for contributors, downloads, stargazers and open issues for **AgjGd** can be found below.
 
 ## Downloads
 

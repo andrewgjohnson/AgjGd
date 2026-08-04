@@ -1,0 +1,39 @@
+name: Coveralls.io
+
+on:
+  push:
+    branches: [master]
+  pull_request:
+    branches: [master]
+  workflow_dispatch: # Allow manual triggering
+
+permissions:
+  contents: read
+
+jobs:
+  coverage:
+    name: Coverage
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.3'
+          extensions: gd
+          coverage: pcov
+
+      - name: Install dependencies with Composer
+        run: composer install --prefer-dist --no-progress --no-interaction
+
+      - name: Run coverage
+        run: vendor/bin/phpunit --coverage-clover coverage/clover.xml
+
+      - name: Upload to Coveralls.io
+        uses: coverallsapp/github-action@v2
+        with:
+          file: coverage/clover.xml
+          format: clover

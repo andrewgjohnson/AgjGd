@@ -1,12 +1,12 @@
-# agjgd Security Policies and Procedures
+# AgjGd Security Policies and Procedures
 
-This document outlines security procedures and general policies for the agjgd project as found on https://github.com/agjgd/agjgd.
+This document outlines security procedures and general policies for the AgjGd project as found on https://github.com/andrewgjohnson/AgjGd.
 
 ## Reporting a Vulnerability
 
-The agjgd team and community take all security vulnerabilities seriously. Thank you for improving the security of our software. We appreciate your efforts and responsible disclosure and will make every effort to acknowledge your contributions.
+The AgjGd team and community take all security vulnerabilities seriously. Thank you for improving the security of our software. We appreciate your efforts and responsible disclosure and will make every effort to acknowledge your contributions.
 
-Report security vulnerabilities by emailing the agjgd team at:
+Report security vulnerabilities by emailing the AgjGd team at:
 
     agjgd.org@gmail.com
 

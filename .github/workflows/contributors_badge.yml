@@ -1,0 +1,69 @@
+name: Contributors Badge
+
+on:
+  workflow_run:
+    workflows: ["Contributors Data"]
+    types: [completed]
+  workflow_dispatch: # allow manual triggering
+
+permissions:
+  contents: write
+
+jobs:
+  build-badge:
+    runs-on: ubuntu-latest
+    if: ${{ github.event_name == 'workflow_dispatch' || github.event.workflow_run.conclusion == 'success' }}
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          ref: master # always read the latest committed data file
+
+      - name: Build contributors badge
+        run: |
+          if [ ! -f data/contributors.json ]; then
+            echo "::warning::data/contributors.json not found yet; skipping badge"
+            exit 0
+          fi
+
+          # Unique contributors across all repositories, counted by account id.
+          TOTAL_CONTRIBUTORS=$(jq '[.repositories[].contributors[].id] | unique | length' data/contributors.json)
+
+          BADGE_URL="https://raster.shields.io/badge/contributors-"
+          if [ $TOTAL_CONTRIBUTORS -ge 999500 ]; then
+            ROUNDED_CONTRIBUTORS=$(( (TOTAL_CONTRIBUTORS) / 1000000 ))
+            BADGE_URL="${BADGE_URL}${ROUNDED_CONTRIBUTORS}M"
+          elif [ $TOTAL_CONTRIBUTORS -ge 1000 ]; then
+            ROUNDED_CONTRIBUTORS=$(( (TOTAL_CONTRIBUTORS) / 1000 ))
+            BADGE_URL="${BADGE_URL}${ROUNDED_CONTRIBUTORS}k"
+          else
+            BADGE_URL="${BADGE_URL}${TOTAL_CONTRIBUTORS}"
+          fi
+          BADGE_URL="${BADGE_URL}-0366d6.png?colorB=0366d6&style=flat-square&logoColor=white&logo=github"
+
+          echo "Downloading badge from URL: $BADGE_URL"
+          curl -L "$BADGE_URL" -o documentation/images/contributors-badge.png
+
+      - name: Commit and push changes
+        run: |
+          git config --global user.name 'github-actions[bot]'
+          git config --global user.email 'github-actions[bot]@users.noreply.github.com'
+          git add documentation/images/contributors-badge.png
+          if [ -z "$(git status --porcelain)" ]; then
+            echo "No changes to commit"
+            exit 0
+          fi
+          git commit -m "Update contributors badge"
+
+          for ATTEMPT in 1 2 3 4 5; do
+            if git push; then
+              exit 0
+            fi
+            echo "Push rejected (attempt $ATTEMPT); rebasing on latest master and retrying"
+            git pull --rebase origin master
+          done
+          echo "::error::Failed to push after multiple attempts"
+          exit 1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

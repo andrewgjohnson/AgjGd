@@ -1,0 +1,106 @@
+<?php
+
+/**
+ * AgjGd Example (imagefttextfilter: Glow)
+ *
+ * Copyright (c) 2013–2026 Andrew G. Johnson <andrew@andrewgjohnson.com>
+ * Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated
+ * documentation files (the "Software"), to deal in the Software without restriction, including without limitation the
+ * rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to
+ * permit persons to whom the Software is furnished to do so, subject to the following conditions:
+ * The above copyright notice and this permission notice shall be included in all copies or substantial portions of the
+ * Software.
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE
+ * WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR
+ * COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR
+ * OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+ *
+ * PHP version 8
+ *
+ * @category  AndrewGJohnson
+ * @package   AgjGd
+ * @author    Andrew G. Johnson <andrew@andrewgjohnson.com>
+ * @copyright 2013–2026 Andrew G. Johnson <andrew@andrewgjohnson.com>
+ * @license   https://opensource.org/licenses/mit/ The MIT License
+ * @link      https://github.com/andrewgjohnson/AgjGd
+ */
+
+use AndrewGJohnson\AgjGd;
+
+// Load the AgjGd class directly from source, or fall back to the Composer autoloader
+if (file_exists('../../source/AndrewGJohnson/AgjGd.php')) {
+    require_once '../../source/AndrewGJohnson/AgjGd.php';
+} elseif (file_exists('../../vendor/autoload.php')) {
+    require_once '../../vendor/autoload.php';
+} elseif (!class_exists('AndrewGJohnson\AgjGd')) {
+    die('AndrewGJohnson\AgjGd class not found');
+}
+
+// Set the parameters for our image
+$width  = 600;
+$height = 300;
+$size   = 20;
+$font   = dirname(__DIR__) . '/NotoSans-Regular.ttf';
+$string = 'This is an example that is glowing';
+
+// Measure the text in advance so that it can be centred
+$textDimensions = imagettfbbox($size, 0, $font, $string);
+
+if ($textDimensions === false) {
+    die('Could not measure the text');
+}
+
+// Calculate the text’s edges
+$textLeft   = min($textDimensions[0], $textDimensions[2], $textDimensions[4], $textDimensions[6]);
+$textRight  = max($textDimensions[0], $textDimensions[2], $textDimensions[4], $textDimensions[6]);
+$textTop    = min($textDimensions[1], $textDimensions[3], $textDimensions[5], $textDimensions[7]);
+$textBottom = max($textDimensions[1], $textDimensions[3], $textDimensions[5], $textDimensions[7]);
+
+// Calculate the text’s position
+$xOffset = (int)round(($width / 2) - (($textRight - $textLeft) / 2) - $textLeft);
+$yOffset = (int)round(($height / 2) - (($textBottom - $textTop) / 2) - $textTop);
+
+// Create our image
+$im = imagecreatetruecolor($width, $height);
+
+if ($im === false) {
+    die('Could not create the image');
+}
+
+// Set our image’s colors
+$backgroundColor = (int)imagecolorallocate($im, 0xEE, 0xEE, 0xEE);
+$textColor       = (int)imagecolorallocate($im, 0x00, 0x00, 0x00);
+$glowColor       = (int)imagecolorallocate($im, 0xFF, 0xFF, 0x00);
+
+// Fill our image with the background color
+imagefill($im, 0, 0, $backgroundColor);
+
+// Place the glow onto our image by blurring the text heavily in the glow color
+AgjGd::imagefttextfilter(
+    $im,
+    $size,
+    0,
+    $xOffset,
+    $yOffset,
+    $glowColor,
+    $font,
+    $string,
+    [],
+    10
+);
+
+// Place the unblurred text on top of the glow
+imagettftext(
+    $im,
+    $size,
+    0,
+    $xOffset,
+    $yOffset,
+    $textColor,
+    $font,
+    $string
+);
+
+// Display our image
+header('Content-Type: image/png');
+imagepng($im);

@@ -1,6 +1,6 @@
 project|issues
 -------|----------
-[agjgd/**agjgd**](https://github.com/agjgd/agjgd)|[0](https://github.com/agjgd/agjgd/issues)
+[agjgd/**agjgd**](https://github.com/andrewgjohnson/AgjGd)|[0](https://github.com/andrewgjohnson/AgjGd/issues)
 [andrewgjohnson/**imageblendedcolorallocate**](https://github.com/andrewgjohnson/imageblendedcolorallocate)|[0](https://github.com/andrewgjohnson/imageblendedcolorallocate/issues)
 [andrewgjohnson/**imagecolorallocatefromstring**](https://github.com/andrewgjohnson/imagecolorallocatefromstring)|[0](https://github.com/andrewgjohnson/imagecolorallocatefromstring/issues)
 [andrewgjohnson/**imagegradientrectangle**](https://github.com/andrewgjohnson/imagegradientrectangle)|[0](https://github.com/andrewgjohnson/imagegradientrectangle/issues)

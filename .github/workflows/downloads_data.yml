@@ -1,0 +1,110 @@
+name: Downloads Data
+
+on:
+  schedule:
+    - cron: '0 * * * *' # run hourly
+  workflow_dispatch: # allow manual triggering
+
+permissions:
+  contents: write
+
+jobs:
+  fetch-downloads:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          ref: master
+
+      - name: Fetch downloads
+        run: |
+          REPOS=(
+            "andrewgjohnson/agjgd"
+            "andrewgjohnson/imageblendedcolorallocate"
+            "andrewgjohnson/imagecolorallocatefromstring"
+            "andrewgjohnson/imagegradientrectangle"
+            "andrewgjohnson/imagettftextblur"
+            "andrewgjohnson/imagettftextgradient"
+            "andrewgjohnson/linebreaks4imagettftext"
+          )
+
+          # Load previous values so a transient API failure preserves them.
+          declare -A PREV_DOWNLOADS
+          if [ -f data/downloads.json ]; then
+            while IFS=$'\t' read -r repo downloads; do
+              PREV_DOWNLOADS["$repo"]=$downloads
+            done < <(jq -r '.repositories[] | "\(.repository)\t\(.downloads)"' data/downloads.json)
+          fi
+
+          REPO_DOWNLOADS=()
+          FAILED=0
+
+          for REPO in "${REPOS[@]}"; do
+            RESPONSE=$(curl -s "https://packagist.org/packages/$REPO/stats.json")
+            DOWNLOADS=$(echo "$RESPONSE" | jq '.downloads.total')
+            if [[ "$DOWNLOADS" =~ ^[0-9]+$ ]]; then
+              REPO_DOWNLOADS+=("$REPO $DOWNLOADS")
+            else
+              echo "::warning::Failed to fetch downloads for $REPO"
+              PREV=${PREV_DOWNLOADS["$REPO"]:-0}
+              echo "Preserving previous value for $REPO: $PREV"
+              REPO_DOWNLOADS+=("$REPO $PREV")
+              FAILED=$((FAILED + 1))
+            fi
+          done
+
+          IFS=$'\n' SORTED=($(sort -k1,1 <<<"${REPO_DOWNLOADS[*]}"))
+          unset IFS
+
+          REPO_JSON_ITEMS=()
+          for ENTRY in "${SORTED[@]}"; do
+            REPO=$(echo $ENTRY | awk '{print $1}')
+            DOWNLOADS=$(echo $ENTRY | awk '{print $2}')
+            ITEM=$(jq -n \
+              --arg repository "$REPO" \
+              --argjson downloads "$DOWNLOADS" \
+              '{repository: $repository, downloads: $downloads}')
+            REPO_JSON_ITEMS+=("$ITEM")
+          done
+
+          mkdir -p data
+          printf '%s\n' "${REPO_JSON_ITEMS[@]}" | jq -s '{repositories: .}' > data/downloads.json
+
+          echo "Wrote data/downloads.json:"
+          cat data/downloads.json
+
+          echo "FAILED_REPOS=$FAILED" >> "$GITHUB_ENV"
+
+      - name: Commit and push changes
+        if: always()
+        run: |
+          git config --global user.name 'github-actions[bot]'
+          git config --global user.email 'github-actions[bot]@users.noreply.github.com'
+          git add data/downloads.json
+          if [ -z "$(git status --porcelain)" ]; then
+            echo "No changes to commit"
+            exit 0
+          fi
+          git commit -m "Update downloads data"
+
+          for ATTEMPT in 1 2 3 4 5; do
+            if git push; then
+              exit 0
+            fi
+            echo "Push rejected (attempt $ATTEMPT); rebasing on latest master and retrying"
+            git pull --rebase origin master
+          done
+          echo "::error::Failed to push after multiple attempts"
+          exit 1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Fail if any repositories could not be fetched
+        if: always()
+        run: |
+          if [ "${FAILED_REPOS:-0}" -gt 0 ]; then
+            echo "::error::$FAILED_REPOS repositor(y/ies) could not be fetched; their previous values were preserved."
+            exit 1
+          fi

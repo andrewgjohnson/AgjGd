@@ -1,0 +1,67 @@
+name: Issues Report
+
+on:
+  workflow_run:
+    workflows: ["Issues Data"]
+    types: [completed]
+  workflow_dispatch: # allow manual triggering
+
+permissions:
+  contents: write
+
+jobs:
+  generate-report:
+    runs-on: ubuntu-latest
+    if: ${{ github.event_name == 'workflow_dispatch' || github.event.workflow_run.conclusion == 'success' }}
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          ref: master # always read the latest committed data file
+
+      - name: Generate report
+        run: |
+          if [ ! -f data/issues.json ]; then
+            echo "::warning::data/issues.json not found yet; skipping report"
+            exit 0
+          fi
+
+          REPORT="project|issues\n-------|----------\n"
+          TOTAL_ISSUES=0
+          while IFS=$'\t' read -r REPO OPEN_ISSUES; do
+            [ -z "$REPO" ] && continue
+            TOTAL_ISSUES=$((TOTAL_ISSUES + OPEN_ISSUES))
+            USERNAME=$(echo "$REPO" | cut -d'/' -f1)
+            REPO_NAME=$(echo "$REPO" | cut -d'/' -f2)
+            REPORT+="[$USERNAME/**$REPO_NAME**](https://github.com/$REPO)|[$OPEN_ISSUES](https://github.com/$REPO/issues)\n"
+          done < <(jq -r '.repositories[] | [.repository, (.openIssues|tostring)] | @tsv' data/issues.json)
+
+          REPORT+="**Total issues across all projects**|**$TOTAL_ISSUES**"
+          echo -e "$REPORT" > ISSUES.md
+
+          echo "Wrote ISSUES.md:"
+          cat ISSUES.md
+
+      - name: Commit and push changes
+        run: |
+          git config --global user.name 'github-actions[bot]'
+          git config --global user.email 'github-actions[bot]@users.noreply.github.com'
+          git add ISSUES.md
+          if [ -z "$(git status --porcelain)" ]; then
+            echo "No changes to commit"
+            exit 0
+          fi
+          git commit -m "Update issues report"
+
+          for ATTEMPT in 1 2 3 4 5; do
+            if git push; then
+              exit 0
+            fi
+            echo "Push rejected (attempt $ATTEMPT); rebasing on latest master and retrying"
+            git pull --rebase origin master
+          done
+          echo "::error::Failed to push after multiple attempts"
+          exit 1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

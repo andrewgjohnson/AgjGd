@@ -1,0 +1,85 @@
+name: Contributors Report
+
+on:
+  workflow_run:
+    workflows: ["Contributors Data"]
+    types: [completed]
+  workflow_dispatch: # allow manual triggering
+
+permissions:
+  contents: write
+
+jobs:
+  generate-report:
+    runs-on: ubuntu-latest
+    if: ${{ github.event_name == 'workflow_dispatch' || github.event.workflow_run.conclusion == 'success' }}
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          ref: master # always read the latest committed data file
+
+      - name: Generate report
+        run: |
+          DATA=data/contributors.json
+          if [ ! -f "$DATA" ]; then
+            echo "::warning::data/contributors.json not found yet; skipping report"
+            exit 0
+          fi
+
+          # A contributor is a bot if the API typed it as one or it is the ImgBot account.
+          BOT_FILTER='.type == "Bot" or .login == "ImgBotApp"'
+          HUMAN_FILTER='.type != "Bot" and .login != "ImgBotApp"'
+
+          UNIQUE_HUMANS=$(jq "[.repositories[].contributors[] | select($HUMAN_FILTER)] | unique_by(.login) | length" "$DATA")
+          UNIQUE_BOTS=$(jq "[.repositories[].contributors[] | select($BOT_FILTER)] | unique_by(.login) | length" "$DATA")
+          UNIQUE_CONTRIBUTORS=$((UNIQUE_HUMANS + UNIQUE_BOTS))
+
+          REPORT="project|contributors\n-------|------------\n"
+          while IFS=$'\t' read -r REPO COUNT; do
+            [ -z "$REPO" ] && continue
+            USERNAME=$(echo "$REPO" | cut -d'/' -f1)
+            REPO_NAME=$(echo "$REPO" | cut -d'/' -f2)
+            REPORT+="[$USERNAME/**$REPO_NAME**](https://github.com/$REPO)|[$COUNT](https://github.com/$REPO/graphs/contributors)\n"
+          done < <(jq -r '.repositories[] | [.repository, (.contributors|length|tostring)] | @tsv' "$DATA")
+
+          REPORT+="**Unique contributors across all projects**|**$UNIQUE_CONTRIBUTORS**\n\n# List of all contributors\n"
+
+          # Humans first, then bots; each unique by login and sorted for a stable list.
+          while IFS=$'\t' read -r LOGIN URL; do
+            [ -z "$LOGIN" ] && continue
+            REPORT+="\n * [$LOGIN]($URL)"
+          done < <(jq -r "[.repositories[].contributors[] | select($HUMAN_FILTER)] | unique_by(.login) | sort_by(.login)[] | [.login, .htmlUrl] | @tsv" "$DATA")
+          while IFS=$'\t' read -r LOGIN URL; do
+            [ -z "$LOGIN" ] && continue
+            REPORT+="\n * [$LOGIN]($URL)"
+          done < <(jq -r "[.repositories[].contributors[] | select($BOT_FILTER)] | unique_by(.login) | sort_by(.login)[] | [.login, .htmlUrl] | @tsv" "$DATA")
+
+          echo -e "$REPORT" > CONTRIBUTORS.md
+
+          echo "Wrote CONTRIBUTORS.md:"
+          cat CONTRIBUTORS.md
+
+      - name: Commit and push changes
+        run: |
+          git config --global user.name 'github-actions[bot]'
+          git config --global user.email 'github-actions[bot]@users.noreply.github.com'
+          git add CONTRIBUTORS.md
+          if [ -z "$(git status --porcelain)" ]; then
+            echo "No changes to commit"
+            exit 0
+          fi
+          git commit -m "Update contributors report"
+
+          for ATTEMPT in 1 2 3 4 5; do
+            if git push; then
+              exit 0
+            fi
+            echo "Push rejected (attempt $ATTEMPT); rebasing on latest master and retrying"
+            git pull --rebase origin master
+          done
+          echo "::error::Failed to push after multiple attempts"
+          exit 1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

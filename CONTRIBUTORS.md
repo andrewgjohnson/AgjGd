@@ -1,6 +1,6 @@
 project|contributors
 -------|------------
-[agjgd/**agjgd**](https://github.com/agjgd/agjgd)|[2](https://github.com/agjgd/agjgd/graphs/contributors)
+[agjgd/**agjgd**](https://github.com/andrewgjohnson/AgjGd)|[2](https://github.com/andrewgjohnson/AgjGd/graphs/contributors)
 [andrewgjohnson/**imageblendedcolorallocate**](https://github.com/andrewgjohnson/imageblendedcolorallocate)|[2](https://github.com/andrewgjohnson/imageblendedcolorallocate/graphs/contributors)
 [andrewgjohnson/**imagecolorallocatefromstring**](https://github.com/andrewgjohnson/imagecolorallocatefromstring)|[2](https://github.com/andrewgjohnson/imagecolorallocatefromstring/graphs/contributors)
 [andrewgjohnson/**imagegradientrectangle**](https://github.com/andrewgjohnson/imagegradientrectangle)|[2](https://github.com/andrewgjohnson/imagegradientrectangle/graphs/contributors)

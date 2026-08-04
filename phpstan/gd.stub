@@ -1,0 +1,74 @@
+<?php
+
+/**
+ * PHPStan types imageftbbox(), imagefttext(), imagettfbbox() and imagettftext() as returning a plain array, which loses
+ * the fact that they all return the eight integers of a text bounding box. These stubs restore that detail so the
+ * bounding boxes this library derives from them stay typed all the way through.
+ *
+ * imagefttext()/imagettftext() and imageftbbox()/imagettfbbox() are equivalent pairs sharing the same FreeType
+ * implementation, so both spellings are stubbed identically.
+ */
+
+/**
+ * @param array{linespacing?: float} $options
+ *
+ * @return array{0: int, 1: int, 2: int, 3: int, 4: int, 5: int, 6: int, 7: int}|false
+ */
+function imageftbbox(
+    float $size,
+    float $angle,
+    string $font_filename,
+    string $string,
+    array $options = []
+): array|false {
+}
+
+/**
+ * @param array{linespacing?: float} $options
+ *
+ * @return array{0: int, 1: int, 2: int, 3: int, 4: int, 5: int, 6: int, 7: int}|false
+ */
+function imagefttext(
+    \GdImage $image,
+    float $size,
+    float $angle,
+    int $x,
+    int $y,
+    int $color,
+    string $font_filename,
+    string $text,
+    array $options = []
+): array|false {
+}
+
+/**
+ * @param array{linespacing?: float} $options
+ *
+ * @return array{0: int, 1: int, 2: int, 3: int, 4: int, 5: int, 6: int, 7: int}|false
+ */
+function imagettfbbox(
+    float $size,
+    float $angle,
+    string $font_filename,
+    string $string,
+    array $options = []
+): array|false {
+}
+
+/**
+ * @param array{linespacing?: float} $options
+ *
+ * @return array{0: int, 1: int, 2: int, 3: int, 4: int, 5: int, 6: int, 7: int}|false
+ */
+function imagettftext(
+    \GdImage $image,
+    float $size,
+    float $angle,
+    int $x,
+    int $y,
+    int $color,
+    string $font_filename,
+    string $text,
+    array $options = []
+): array|false {
+}

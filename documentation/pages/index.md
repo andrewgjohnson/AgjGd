@@ -1,6 +1,6 @@
 ---
 layout:    default
-title:     agjgd • Readme
+title:     AgjGd • Readme
 permalink: /
 nav_order: 1
 nav_text:  Readme

@@ -1,6 +1,6 @@
 project|downloads
 -------|----------
-[agjgd/**agjgd**](https://github.com/agjgd/agjgd)|[8](https://packagist.org/packages/agjgd/agjgd/stats)
+[agjgd/**agjgd**](https://github.com/andrewgjohnson/AgjGd)|[8](https://packagist.org/packages/agjgd/agjgd/stats)
 [andrewgjohnson/**imageblendedcolorallocate**](https://github.com/andrewgjohnson/imageblendedcolorallocate)|[52](https://packagist.org/packages/andrewgjohnson/imageblendedcolorallocate/stats)
 [andrewgjohnson/**imagecolorallocatefromstring**](https://github.com/andrewgjohnson/imagecolorallocatefromstring)|[16](https://packagist.org/packages/andrewgjohnson/imagecolorallocatefromstring/stats)
 [andrewgjohnson/**imagegradientrectangle**](https://github.com/andrewgjohnson/imagegradientrectangle)|[25](https://packagist.org/packages/andrewgjohnson/imagegradientrectangle/stats)
