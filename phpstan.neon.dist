@@ -1,0 +1,8 @@
+parameters:
+    level: max
+    paths:
+        - source
+        - tests
+        - examples
+    stubFiles:
+        - phpstan/gd.stub

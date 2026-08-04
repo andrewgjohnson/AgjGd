@@ -1,6 +1,6 @@
 ---
 layout:    default
-title:     Menu • agjgd
+title:     Menu • AgjGd
 permalink: /menu/
 ---
 

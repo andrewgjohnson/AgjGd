@@ -1,0 +1,46 @@
+name: CI
+
+on:
+  pull_request:
+  push:
+    branches:
+      - master
+
+jobs:
+  test:
+    name: PHP ${{ matrix.php-version }}
+    runs-on: ubuntu-latest
+
+    strategy:
+      fail-fast: false
+      matrix:
+        php-version: ['8.3', '8.4', '8.5']
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: ${{ matrix.php-version }}
+          extensions: gd
+          coverage: none
+
+      - name: Validate composer.json
+        run: composer validate --strict
+
+      - name: Install dependencies with Composer
+        run: composer install --prefer-dist --no-progress --no-interaction
+
+      - name: Lint with PHP_CodeSniffer
+        run: composer lint
+
+      # PHPUnit 12 requires PHP 8.3, so the test suite cannot run on the 8.0 to 8.2 releases this library supports.
+      # `composer phpstan` therefore runs a second pass, phpstan-php80.neon.dist, which analyses the class and the
+      # examples across the whole supported range and fails on any syntax or function newer than PHP 8.0.
+      - name: Analyse with PHPStan
+        run: composer phpstan
+
+      - name: Run unit tests with PHPUnit
+        run: composer phpunit

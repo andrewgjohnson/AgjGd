@@ -1,8 +1,8 @@
 ---
 layout:    default
-title:     License • agjgd
+title:     License • AgjGd
 permalink: /license/
-nav_order: 4
+nav_order: 7
 nav_text:  License
 ---
 
@@ -13,4 +13,4 @@ nav_text:  License
 
 ---
 
-You can read more about [**the MIT License**](https://opensource.org/licenses/mit/) at [https://opensource.org/licenses/mit/](https://opensource.org/licenses/mit/).
+You can read more about [the MIT License](https://opensource.org/licenses/mit) at [opensource.org/licenses/mit](https://opensource.org/licenses/mit).

@@ -13,7 +13,6 @@ Thumbs.db
 .buildpath
 .project
 _site
-.settings/*
 composer.lock
 vendor
 .phpunit.result.cache
@@ -22,3 +21,7 @@ vendor
 _config.local.yml
 _layouts
 assets
+coverage
+coverage/*
+.jekyll-cache
+.jekyll-cache/*

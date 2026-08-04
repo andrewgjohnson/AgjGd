@@ -1,0 +1,19 @@
+# A second PHPStan pass that holds the code to the minimum supported PHP version.
+#
+# This library supports PHP 8.0 and newer, but nothing else verifies that floor: PHPUnit 12 requires PHP 8.3, so the
+# test suite never runs on 8.0 to 8.2, and PHP_CodeSniffer only enforces PSR-12 and does no cross-version checking.
+# This pass is therefore the only automated guard that a PHP 8.1+ feature has not slipped into the shipped code; it
+# analyses across the whole supported range and reports any syntax or function that would not work on PHP 8.0.
+#
+# Only the code that ships to users is analysed here. The tests are excluded because PHPUnit's own source does not
+# parse as PHP 8.0, and they only ever run on 8.3 and newer anyway.
+parameters:
+    level: max
+    paths:
+        - source
+        - examples
+    stubFiles:
+        - phpstan/gd.stub
+    phpVersion:
+        min: 80000
+        max: 80500

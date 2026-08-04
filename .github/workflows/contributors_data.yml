@@ -1,0 +1,115 @@
+name: Contributors Data
+
+on:
+  schedule:
+    - cron: '0 * * * *' # run hourly
+  workflow_dispatch: # allow manual triggering
+
+permissions:
+  contents: write
+
+jobs:
+  fetch-contributors:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          ref: master
+
+      - name: Fetch contributors
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          REPOS=(
+            "andrewgjohnson/AgjGd"
+            "andrewgjohnson/imageblendedcolorallocate"
+            "andrewgjohnson/imagecolorallocatefromstring"
+            "andrewgjohnson/imagegradientrectangle"
+            "andrewgjohnson/imagettftextblur"
+            "andrewgjohnson/imagettftextgradient"
+            "andrewgjohnson/linebreaks4imagettftext"
+          )
+
+          REPO_OBJECTS=()
+          FAILED=0
+
+          for REPO in "${REPOS[@]}"; do
+            PAGE=1
+            REPO_JSON='[]'
+            FETCH_FAILED=false
+            while true; do
+              RESPONSE=$(curl -s -H "Authorization: token $GITHUB_TOKEN" "https://api.github.com/repos/$REPO/contributors?per_page=100&page=$PAGE")
+              if echo "$RESPONSE" | jq -e 'type == "array"' > /dev/null 2>&1; then
+                COUNT=$(echo "$RESPONSE" | jq 'length')
+                if [ "$COUNT" -eq 0 ]; then
+                  break
+                fi
+                PAGE_ITEMS=$(echo "$RESPONSE" | jq '[.[] | {id, login, htmlUrl: .html_url, type}]')
+                REPO_JSON=$(jq -n --argjson a "$REPO_JSON" --argjson b "$PAGE_ITEMS" '$a + $b')
+                if [ "$COUNT" -lt 100 ]; then
+                  break
+                fi
+                PAGE=$((PAGE + 1))
+              else
+                MESSAGE=$(echo "$RESPONSE" | jq -r '.message // "unexpected response"' 2>/dev/null || echo "unexpected response")
+                echo "::warning::Failed to fetch contributors for $REPO: $MESSAGE"
+                FETCH_FAILED=true
+                break
+              fi
+            done
+
+            if [ "$FETCH_FAILED" = true ]; then
+              # Keep the previously recorded contributors for this repo.
+              if [ -f data/contributors.json ]; then
+                REPO_JSON=$(jq -c --arg r "$REPO" '(.repositories[] | select(.repository == $r) | .contributors) // []' data/contributors.json)
+              else
+                REPO_JSON='[]'
+              fi
+              echo "Preserving previous contributors for $REPO"
+              FAILED=$((FAILED + 1))
+            fi
+
+            REPO_OBJECTS+=("$(jq -n --arg repository "$REPO" --argjson contributors "$REPO_JSON" '{repository: $repository, contributors: $contributors}')")
+          done
+
+          mkdir -p data
+          printf '%s\n' "${REPO_OBJECTS[@]}" | jq -s 'sort_by(.repository) | {repositories: .}' > data/contributors.json
+
+          echo "Wrote data/contributors.json:"
+          cat data/contributors.json
+
+          echo "FAILED_REPOS=$FAILED" >> "$GITHUB_ENV"
+
+      - name: Commit and push changes
+        if: always()
+        run: |
+          git config --global user.name 'github-actions[bot]'
+          git config --global user.email 'github-actions[bot]@users.noreply.github.com'
+          git add data/contributors.json
+          if [ -z "$(git status --porcelain)" ]; then
+            echo "No changes to commit"
+            exit 0
+          fi
+          git commit -m "Update contributors data"
+
+          for ATTEMPT in 1 2 3 4 5; do
+            if git push; then
+              exit 0
+            fi
+            echo "Push rejected (attempt $ATTEMPT); rebasing on latest master and retrying"
+            git pull --rebase origin master
+          done
+          echo "::error::Failed to push after multiple attempts"
+          exit 1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Fail if any repositories could not be fetched
+        if: always()
+        run: |
+          if [ "${FAILED_REPOS:-0}" -gt 0 ]; then
+            echo "::error::$FAILED_REPOS repositor(y/ies) could not be fetched; their previous values were preserved."
+            exit 1
+          fi
