@@ -1,0 +1,33 @@
+{
+  "repositories": [
+    {
+      "repository": "andrewgjohnson/AgjGd",
+      "stargazers": 1
+    },
+    {
+      "repository": "andrewgjohnson/imageblendedcolorallocate",
+      "stargazers": 1
+    },
+    {
+      "repository": "andrewgjohnson/imagecolorallocatefromstring",
+      "stargazers": 1
+    },
+    {
+      "repository": "andrewgjohnson/imagegradientrectangle",
+      "stargazers": 1
+    },
+    {
+      "repository": "andrewgjohnson/imagettftextblur",
+      "stargazers": 27
+    },
+    {
+      "repository": "andrewgjohnson/imagettftextgradient",
+      "stargazers": 4
+    },
+    {
+      "repository": "andrewgjohnson/linebreaks4imagettftext",
+      "stargazers": 5
+    }
+  ],
+  "uniqueStargazers": 34
+}
