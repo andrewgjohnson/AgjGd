@@ -1,0 +1,129 @@
+{
+  "repositories": [
+    {
+      "repository": "andrewgjohnson/AgjGd",
+      "contributors": [
+        {
+          "id": 41898282,
+          "login": "github-actions[bot]",
+          "htmlUrl": "https://github.com/apps/github-actions",
+          "type": "Bot"
+        },
+        {
+          "id": 1124501,
+          "login": "andrewgjohnson",
+          "htmlUrl": "https://github.com/andrewgjohnson",
+          "type": "User"
+        }
+      ]
+    },
+    {
+      "repository": "andrewgjohnson/imageblendedcolorallocate",
+      "contributors": [
+        {
+          "id": 1124501,
+          "login": "andrewgjohnson",
+          "htmlUrl": "https://github.com/andrewgjohnson",
+          "type": "User"
+        },
+        {
+          "id": 31427850,
+          "login": "ImgBotApp",
+          "htmlUrl": "https://github.com/ImgBotApp",
+          "type": "User"
+        }
+      ]
+    },
+    {
+      "repository": "andrewgjohnson/imagecolorallocatefromstring",
+      "contributors": [
+        {
+          "id": 1124501,
+          "login": "andrewgjohnson",
+          "htmlUrl": "https://github.com/andrewgjohnson",
+          "type": "User"
+        },
+        {
+          "id": 31427850,
+          "login": "ImgBotApp",
+          "htmlUrl": "https://github.com/ImgBotApp",
+          "type": "User"
+        }
+      ]
+    },
+    {
+      "repository": "andrewgjohnson/imagegradientrectangle",
+      "contributors": [
+        {
+          "id": 1124501,
+          "login": "andrewgjohnson",
+          "htmlUrl": "https://github.com/andrewgjohnson",
+          "type": "User"
+        },
+        {
+          "id": 31427850,
+          "login": "ImgBotApp",
+          "htmlUrl": "https://github.com/ImgBotApp",
+          "type": "User"
+        }
+      ]
+    },
+    {
+      "repository": "andrewgjohnson/imagettftextblur",
+      "contributors": [
+        {
+          "id": 1124501,
+          "login": "andrewgjohnson",
+          "htmlUrl": "https://github.com/andrewgjohnson",
+          "type": "User"
+        },
+        {
+          "id": 31427850,
+          "login": "ImgBotApp",
+          "htmlUrl": "https://github.com/ImgBotApp",
+          "type": "User"
+        },
+        {
+          "id": 17368112,
+          "login": "vHeemstra",
+          "htmlUrl": "https://github.com/vHeemstra",
+          "type": "User"
+        }
+      ]
+    },
+    {
+      "repository": "andrewgjohnson/imagettftextgradient",
+      "contributors": [
+        {
+          "id": 1124501,
+          "login": "andrewgjohnson",
+          "htmlUrl": "https://github.com/andrewgjohnson",
+          "type": "User"
+        },
+        {
+          "id": 31427850,
+          "login": "ImgBotApp",
+          "htmlUrl": "https://github.com/ImgBotApp",
+          "type": "User"
+        }
+      ]
+    },
+    {
+      "repository": "andrewgjohnson/linebreaks4imagettftext",
+      "contributors": [
+        {
+          "id": 1124501,
+          "login": "andrewgjohnson",
+          "htmlUrl": "https://github.com/andrewgjohnson",
+          "type": "User"
+        },
+        {
+          "id": 31427850,
+          "login": "ImgBotApp",
+          "htmlUrl": "https://github.com/ImgBotApp",
+          "type": "User"
+        }
+      ]
+    }
+  ]
+}
