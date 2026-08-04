@@ -29,7 +29,7 @@ jobs:
             exit 0
           fi
 
-          REPORT="project|stargazers\n-------|----------\n"
+          REPORT="Project|Stargazers\n-------|----------\n"
           while IFS=$'\t' read -r REPO STARGAZERS; do
             [ -z "$REPO" ] && continue
             USERNAME=$(echo "$REPO" | cut -d'/' -f1)

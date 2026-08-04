@@ -27,7 +27,7 @@ jobs:
             exit 0
           fi
 
-          REPORT="project|issues\n-------|----------\n"
+          REPORT="Project|Issues\n-------|----------\n"
           TOTAL_ISSUES=0
           while IFS=$'\t' read -r REPO OPEN_ISSUES; do
             [ -z "$REPO" ] && continue

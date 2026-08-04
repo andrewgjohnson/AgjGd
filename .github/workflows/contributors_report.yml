@@ -36,7 +36,7 @@ jobs:
           UNIQUE_BOTS=$(jq "[.repositories[].contributors[] | select($BOT_FILTER)] | unique_by(.login) | length" "$DATA")
           UNIQUE_CONTRIBUTORS=$((UNIQUE_HUMANS + UNIQUE_BOTS))
 
-          REPORT="project|contributors\n-------|------------\n"
+          REPORT="Project|Contributors\n-------|------------\n"
           while IFS=$'\t' read -r REPO COUNT; do
             [ -z "$REPO" ] && continue
             USERNAME=$(echo "$REPO" | cut -d'/' -f1)
